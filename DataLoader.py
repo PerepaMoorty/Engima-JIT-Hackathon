@@ -25,4 +25,18 @@ else:
     # Opening the Request URL
     with urllib.request.urlopen(data_url) as url:
         data = json.loads(url.read().decode())
-        print(data)
+        data = data["Time Series (Intraday)"]
+        df = pd.DataFrame(columns=["Date", "Low", "High", "Close", "Open"])
+        for k, v in data.items():
+            date = df.datetime.striptime(k, "%Y-%m-%d")
+            data_row = [
+                date.date(),
+                float(v["3. low"]),
+                float(v["2. high"]),
+                float(v["4. close"]),
+                float(v["1. open"]),
+            ]
+            df.loc[-1, :] = data_row
+            df.index = df.index + 1
+        print("Data saved to : %s" % file_to_save)
+        df.to_csv(file_to_save)
