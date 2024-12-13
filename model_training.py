@@ -1,28 +1,25 @@
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
-
+import pandas as pd
 
 def train_model(data):
-    # Define target variable
-    data["target"] = (data["close"].shift(-1) > data["close"]).astype(int)
-
     # Define features, including sentiment_score
     features = ["RSI", "MACD", "Signal_Line", "BB_High", "BB_Low", "sentiment_score"]
 
     # Drop rows with missing values
     data = data.dropna()
 
-    # Feature matrix and target vector
+    # Feature matrix and target variable
     X = data[features]
-    y = data["target"]
+    y = data["close"]
 
     # Standardize features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # Initialize RandomForestClassifier
-    model = GradientBoostingClassifier(random_state=42)
+    # Initialize RandomForestRegressor
+    model = RandomForestRegressor(random_state=42)
 
     # Define hyperparameter grid for GridSearchCV
     param_grid = {
@@ -33,7 +30,7 @@ def train_model(data):
 
     # Initialize GridSearchCV
     grid_search = GridSearchCV(
-        estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, scoring="accuracy"
+        estimator=model, param_grid=param_grid, cv=5, n_jobs=-1, scoring="neg_mean_squared_error"
     )
 
     # Fit GridSearchCV
@@ -50,10 +47,26 @@ def train_model(data):
     # Fit the best model on training data
     best_model.fit(X_train, y_train)
 
-    # Calculate accuracy on testing data
+    # Calculate accuracy (R-squared score)
     accuracy = best_model.score(X_test, y_test)
 
-    # Predict on the entire dataset
+    # Make predictions for the entire dataset
     data["prediction"] = best_model.predict(X_scaled)
 
-    return best_model, accuracy, data
+    # Predict for the next 30 days
+    future_predictions = []
+    future_dates = pd.date_range(data["date"].iloc[-1] + pd.Timedelta(days=1), periods=30, freq="D")
+
+    # Simulate future data to predict the next 30 days
+    last_features = data[features].iloc[-1].values.reshape(1, -1)  # Last row features
+    for _ in range(30):  # Predict for 30 days
+        last_scaled = scaler.transform(last_features)
+        next_prediction = best_model.predict(last_scaled)[0]
+        future_predictions.append(next_prediction)
+
+        # Update features for the next prediction based on the new prediction
+        # For simplicity, let's just add the predicted value to 'BB_High' and 'BB_Low' as an example
+        last_features[0, features.index("BB_High")] = next_prediction  # Update feature (you can modify other features as well)
+        last_features[0, features.index("BB_Low")] = next_prediction  # Similarly update other relevant features
+
+    return best_model, accuracy, data, future_dates, future_predictions
