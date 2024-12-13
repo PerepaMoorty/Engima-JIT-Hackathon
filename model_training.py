@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler
 
 
@@ -22,7 +22,7 @@ def train_model(data):
     X_scaled = scaler.fit_transform(X)
 
     # Initialize RandomForestClassifier
-    model = RandomForestClassifier(random_state=42)
+    model = GradientBoostingClassifier(random_state=42)
 
     # Define hyperparameter grid for GridSearchCV
     param_grid = {
@@ -44,7 +44,7 @@ def train_model(data):
 
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=42
+        X_scaled, y, test_size=0.32, random_state=42
     )
 
     # Fit the best model on training data
