@@ -1,9 +1,9 @@
 import streamlit as st
 import pandas as pd
-from scripts.data_collection import fetch_stock_data
-from scripts.technical_analysis import calculate_indicators
-from scripts.model_training import train_model
-from scripts.sentiment_analysis import sentiment_analysis
+from data_collection import fetch_stock_data
+from technical_analysis import calculate_indicators
+from model_training import train_model
+from sentiment_analysis import sentiment_analysis
 from datetime import datetime, timedelta
 import plotly.graph_objs as go
 
