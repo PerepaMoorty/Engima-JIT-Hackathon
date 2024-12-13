@@ -7,6 +7,7 @@ from scripts.sentiment_analysis import sentiment_analysis
 from datetime import datetime, timedelta
 import plotly.graph_objs as go
 
+
 def create_dashboard():
     st.title("AI Stock Analysis Tool")
 
@@ -21,14 +22,39 @@ def create_dashboard():
             model, accuracy, data = train_model(data)
 
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=data['date'], y=data['close'], mode='lines', name='Close Price'))
-            fig.add_trace(go.Scatter(x=data['date'], y=data['BB_High'], mode='lines', name='Bollinger High'))
-            fig.add_trace(go.Scatter(x=data['date'], y=data['BB_Low'], mode='lines', name='Bollinger Low'))
-            fig.add_trace(go.Scatter(x=data['date'], y=data['prediction'] * max(data['close']), mode='markers',
-                                     name='Predicted Trend', marker=dict(color='red', size=5)))
+            fig.add_trace(
+                go.Scatter(
+                    x=data["date"], y=data["close"], mode="lines", name="Close Price"
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=data["date"],
+                    y=data["BB_High"],
+                    mode="lines",
+                    name="Bollinger High",
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=data["date"], y=data["BB_Low"], mode="lines", name="Bollinger Low"
+                )
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=data["date"],
+                    y=data["prediction"] * max(data["close"]),
+                    mode="markers",
+                    name="Predicted Trend",
+                    marker=dict(color="blue", size=5),
+                )
+            )
             st.plotly_chart(fig)
 
             st.write(f"Model Accuracy: {accuracy * 100:.2f}%")
-            news = ["Stock rises due to market optimism", "Uncertainty clouds future prospects"]
+            news = [
+                "Stock rises due to market optimism",
+                "Uncertainty clouds future prospects",
+            ]
             avg_score, sentiment_rating = sentiment_analysis(news)
             st.write(f"Sentiment Score: {avg_score:.2f} ({sentiment_rating})")
