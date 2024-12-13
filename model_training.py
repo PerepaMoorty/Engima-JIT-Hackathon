@@ -41,7 +41,7 @@ def train_model(data):
 
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
-        X_scaled, y, test_size=0.2, random_state=42
+        X_scaled, y, test_size=0.32, random_state=42
     )
 
     # Fit the best model on training data
