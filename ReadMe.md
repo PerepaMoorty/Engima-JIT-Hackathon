@@ -44,10 +44,6 @@ This project aims to develop an AI-driven tool to assist traders and investors i
 
 ---
 
-## References
+## Deployed Project Website
 
-- [Investopedia: Basics of Stock Market](https://www.investopedia.com/stocks-4427785)
-- [Screener.in: Stock Fundamentals](https://www.screener.in/)
-- [Chartink: Stock Screener](https://chartink.com/)
-- [NSE India](https://www.nseindia.com/)
-- [BSE India](https://www.bseindia.com/)
+[https://zazazaimon.streamlit.app/]
